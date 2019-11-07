@@ -1,26 +1,17 @@
 <template>
-  <div>
-
-
-
-
-
-      <button>Register</button>
-  </div>
+    <div>
+        <login></login>
+        <signup></signup>
+    </div>
 </template>
 
 <script>
-import login from './views/Login'
-export default {
-    components: {
+    import login from './components/Login'
+    // import signup from './components/SignUp'
+
+    export default {
         login
-    },
-    data() {
-        return {
-            registerShow: false
-        }
     }
-}
 </script>
 
 <style>
