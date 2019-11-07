@@ -16,9 +16,10 @@
 
 <script>
 import login from "./views/Login";
+import signup from "./views/SignUp"
 export default {
   components: {
-    login
+    login, signup
   },
   data() {
     return {
