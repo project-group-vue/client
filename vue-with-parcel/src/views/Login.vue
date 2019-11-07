@@ -14,7 +14,7 @@
   <input type="submit" value="Submit">
 </form>
 
-    <button>Register</button>
+    
 </div>
 </template>
 
