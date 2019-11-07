@@ -1,7 +1,6 @@
 <template>
   <div class="register">
       <h2>Register</h2>
-
         <form>
         Username:<br>
         <input type="text">
@@ -15,8 +14,6 @@
         <br><br>
         <input type="submit" value="Submit">
         </form> 
-
-        
   </div>
 </template>
 
