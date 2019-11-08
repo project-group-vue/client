@@ -1,28 +1,52 @@
 <template>
-<div>
-  <mainPage></mainPage>
   <div>
-    <transition name="fade">
-      <login v-if="loginShow === true" @registerForm="registerForm"></login>
-    </transition>
-    <transition name="fade">
-      <signup v-if="registerShow === true" @loginForm="loginForm"></signup>
-    </transition>
+    <div>
+      <transition name="fade">
+        <div v-if="loginShow === false && registerShow === false && !isLogin">
+          <div class="container text-center my-auto masthead">
+            <h1 class="mb-1">EDYIBPITSM</h1>
+            <h3 class="mb-5">
+              <em>Make Your Post Better</em>
+            </h3>
+            <a
+              class="btn btn-primary btn-xl js-scroll-trigger"
+              v-on:click="findMore"
+              href="#about"
+            >Find Out More</a>
+          </div>
+        </div>
+      </transition>
+      <transition name="fade">
+        <login
+          v-if="loginShow === true && !isLogin"
+          @registerForm="registerForm"
+          @loginEvent="loginEvent"
+        ></login>
+      </transition>
+      <transition name="fade">
+        <signup v-if="registerShow === true && !isLogin" @loginForm="loginForm"></signup>
+      </transition>
+    </div>
+    <mainPage
+      v-if="loginShow === false && registerShow === false && isLogin"
+      @logoutEvent="logoutEvent"
+    ></mainPage>
   </div>
-</div>
 </template>
 
 <script>
 import login from "./views/Login";
 import signup from "./views/SignUp";
-import mainPage from "./views/MainPage"
+import mainPage from "./views/MainPage";
 export default {
   components: {
-    login, signup,
+    login,
+    signup,
     mainPage
   },
   data() {
     return {
+      isLogin: null,
       loginShow: false,
       registerShow: false
     };
@@ -31,13 +55,30 @@ export default {
     findMore() {
       this.loginShow = true;
     },
-    registerForm(){
-      this.registerShow = true
-      this.loginShow = false
+    registerForm() {
+      this.registerShow = true;
+      this.loginShow = false;
     },
-    loginForm(){
-      this.registerShow = false
-      this.loginShow = true
+    loginForm() {
+      this.registerShow = false;
+      this.loginShow = true;
+    },
+    loginEvent() {
+      this.registerShow = false;
+      this.loginShow = false;
+      this.isLogin = localStorage.getItem("token");
+    },
+    logoutEvent() {
+      this.isLogin = null;
+    }
+  },
+  created() {
+    if (localStorage.getItem("token")) {
+      this.isLogin = localStorage.getItem("token");
+      this.registerShow = false;
+      this.loginShow = false;
+    } else {
+      this.isLogin = null;
     }
   }
 };
@@ -71,8 +112,8 @@ body {
   padding: 0;
 }
 
-.fade-enter-active{
-  transition: opacity 1.0s ease-in;
+.fade-enter-active {
+  transition: opacity 1s ease-in;
 }
 .fade-enter/* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;

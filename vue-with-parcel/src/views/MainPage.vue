@@ -1,96 +1,108 @@
 <template>
-<div class="mainPage">
-    <navbar></navbar>
-   <div class="wrapper">
-        <!-- Sidebar  -->
-        <nav id="sidebar">
-            <ul class="list-unstyled components">
-                <li>
-                    <a href="#" @click="showPublish">Publish Stories</a>
-                </li>
-                <li>
-                    <a href="#" @click="addFileShow">Share Stories +</a>
-                </li>
-            </ul>
-        </nav>
+  <div class="mainPage">
+    <navbar @logoutEvent="logoutEvent"></navbar>
+    <div class="wrapper">
+      <!-- Sidebar  -->
+      <nav id="sidebar">
+        <ul class="list-unstyled components">
+          <li>
+            <a href="#" @click="showPublish">Publish Stories</a>
+          </li>
+          <li>
+            <a href="#" @click="addFileShow">Share Stories +</a>
+          </li>
+        </ul>
+      </nav>
 
-        <!-- Page Content  -->
-        <div id="content">
-            <card v-if="publishShow"></card>
-
-                
-
-            <blank v-if="addFileForm"></blank>
+      <!-- Page Content  -->
+      <div id="content">
+        <div v-for="(picture,i) in pictures" :key="i">
+          <card v-if="publishShow" :picture="picture"></card>
         </div>
-        <leftForm></leftForm>
-    </div>
-</div>
 
+        <blank v-if="addFileForm" @fetchingData="getUserPicture"></blank>
+      </div>
+      <leftForm></leftForm>
+    </div>
+  </div>
 </template>
 
 <script>
-import card from '../components/card'
-import navbar from '../components/navbar'
-import leftForm from '../components/leftForm'
-import blank from '../components/blank'
-
+import card from "../components/card";
+import navbar from "../components/navbar";
+import leftForm from "../components/leftForm";
+import blank from "../components/blank";
 
 export default {
-    data() {
-        return {
-            showLeftBar: false,
-            addFileForm: false,
-            publishShow: true,
-            pictures : [],
-            isWaiting: false
-        }
+  data() {
+    return {
+      showLeftBar: false,
+      addFileForm: false,
+      publishShow: true,
+      pictures: ["1", "2", "3"],
+      isWaiting: false
+    };
+  },
+  components: {
+    navbar,
+    leftForm,
+    card,
+    blank
+  },
+  methods: {
+    leftBarShow() {
+      if (this.showLeftBar == false) {
+        this.showLeftBar = true;
+      } else {
+        this.showLeftBar = false;
+      }
     },
-    components: {
-        navbar,
-        leftForm,
-        card,
-        blank
+    addFileShow() {
+      this.addFileForm = true;
+      this.publishShow = false;
     },
-    methods: {
-        leftBarShow () {
-            if (this.showLeftBar == false) {
-                this.showLeftBar = true
-            }else {
-                this.showLeftBar = false
-            }
-        },
-        addFileShow () {
-            this.addFileForm = true
-            this.publishShow = false
-        },
-        showPublish () {
-            this.addFileForm = false,
-            this.publishShow = true
-        },
-        getPics () {
-            isWaiting = true
-            axios({
-                url: '',
-                method: 'GET',
-                headers: localStorage.getItem('token')
-            })
-            .then(({data})=>{
-                this.data = data
-                isWaiting = false
-            })
-            .catch((err) => {
-                
-            })   
+    showPublish() {
+      (this.addFileForm = false), (this.publishShow = true);
+    },
+    getPics() {
+      isWaiting = true;
+      axios({
+        url: "",
+        method: "GET",
+        headers: {
+          token: localStorage.getItem("token")
         }
-    }
+      })
+        .then(({ data }) => {
+          this.data = data;
+          isWaiting = false;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    getUserPicture() {
+      axios({
+        method: "GET",
+        url: "http://localhost:3000/image/findAll"
+      })
+        .then(response => {
+          console.log(response.data);
+          this.pictures = response.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
 
-}
+    logoutEvent() {
+      this.$emit("logoutEvent");
+    }
+  }
+};
 </script>
 
 <style lang="scss" scoped>
-
-
-
 $turbo-yellow: #fff56c;
 $turbo-yellow-10: lighten($turbo-yellow, 40%);
 $turbo-yellow-20: lighten($turbo-yellow, 30%);
@@ -133,156 +145,156 @@ $turbo-yellow-90: darken($turbo-yellow, 40%);
 .bg-turbo-yellow-90 {
   background-color: $turbo-yellow-90;
 }
-    
-    
-   @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-   
-   body {
-    font-family: 'Poppins', sans-serif;
-    background: #fafafa;
+
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
+body {
+  font-family: "Poppins", sans-serif;
+  background: #fafafa;
 }
 
 p {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.1em;
-    font-weight: 300;
-    line-height: 1.7em;
-    color: #999;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.1em;
+  font-weight: 300;
+  line-height: 1.7em;
+  color: #999;
 }
 
 a,
 a:hover,
 a:focus {
-    color: inherit;
-    text-decoration: none;
-    transition: all 0.3s;
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.3s;
 }
 
 .navbar {
-    padding: 15px 10px;
-    background: #fff;
-    border: none;
-    border-radius: 0;
-    margin-bottom: 40px;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 15px 10px;
+  background: #fff;
+  border: none;
+  border-radius: 0;
+  margin-bottom: 40px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .navbar-btn {
-    box-shadow: none;
-    outline: none !important;
-    border: none;
+  box-shadow: none;
+  outline: none !important;
+  border: none;
 }
 
 .line {
-    width: 100%;
-    height: 1px;
-    border-bottom: 1px dashed #ddd;
-    margin: 40px 0;
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px dashed #ddd;
+  margin: 40px 0;
 }
 
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
 
-$lila : $turbo-yellow /*#7386D5*/;
-$lila-60 : $turbo-yellow-60 /*#6d7fcc*/;
-$lila-line : $turbo-yellow-70 /*#47748b*/;
+$lila: $turbo-yellow /*#7386D5*/;
+$lila-60: $turbo-yellow-60 /*#6d7fcc*/;
+$lila-line: $turbo-yellow-70 /*#47748b*/;
 
-$text-sidebar : #050505 /*#fff*/;
-$text-sidebar-hover : #2c2929 /*#fff*/;
+$text-sidebar: #050505 /*#fff*/;
+$text-sidebar-hover: #2c2929 /*#fff*/;
 
 .text-sidebar {
   color: $text-sidebar;
 }
 
 .wrapper {
-    display: flex;
-    width: 100%;
-    align-items: stretch;
+  display: flex;
+  width: 100%;
+  align-items: stretch;
 }
 
 #sidebar {
-    min-width: 250px;
-    max-width: 250px;
-    background: $lila;
-    color: $text-sidebar;
-    transition: all 0.3s;
+  min-width: 250px;
+  max-width: 250px;
+  background: $lila;
+  color: $text-sidebar;
+  transition: all 0.3s;
 }
 
 #sidebar.active {
-    margin-left: -250px;
+  margin-left: -250px;
 }
 
 #sidebar .sidebar-header {
-    padding: 20px;
-    background:$lila-60 /*#6d7fcc*/;
+  padding: 20px;
+  background: $lila-60 /*#6d7fcc*/;
 }
 
 #sidebar ul.components {
-    padding: 20px 0;
-    border-bottom: 1px solid $lila-line;
+  padding: 20px 0;
+  border-bottom: 1px solid $lila-line;
 }
 
 #sidebar ul p {
-    color: $text-sidebar;
-    padding: 10px;
+  color: $text-sidebar;
+  padding: 10px;
 }
 
 #sidebar ul li a {
-    padding: 10px;
-    font-size: 1.1em;
-    display: block;
+  padding: 10px;
+  font-size: 1.1em;
+  display: block;
 }
 
 #sidebar ul li a:hover {
-    color: $lila;
-    background: $text-sidebar-hover;
+  color: $lila;
+  background: $text-sidebar-hover;
 }
 
-#sidebar ul li.active>a, a[aria-expanded="true"] {
-    color: $text-sidebar;
-    background: $lila-60;
+#sidebar ul li.active > a,
+a[aria-expanded="true"] {
+  color: $text-sidebar;
+  background: $lila-60;
 }
 
 a[data-toggle="collapse"] {
-    position: relative;
+  position: relative;
 }
 
 .dropdown-toggle::after {
-    display: block;
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
+  display: block;
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  transform: translateY(-50%);
 }
 
 ul ul a {
-    font-size: 0.9em !important;
-    padding-left: 30px !important;
-    background: $lila-60;
+  font-size: 0.9em !important;
+  padding-left: 30px !important;
+  background: $lila-60;
 }
 
 ul.CTAs {
-    padding: 20px;
+  padding: 20px;
 }
 
 ul.CTAs a {
-    text-align: center;
-    font-size: 0.9em !important;
-    display: block;
-    border-radius: 5px;
-    margin-bottom: 5px;
+  text-align: center;
+  font-size: 0.9em !important;
+  display: block;
+  border-radius: 5px;
+  margin-bottom: 5px;
 }
 
 a.download {
-    background: $text-sidebar;
-    color: $lila;
+  background: $text-sidebar;
+  color: $lila;
 }
 
 a.article,
 a.article:hover {
-    background: $lila-60 !important;
-    color: $text-sidebar !important;
+  background: $lila-60 !important;
+  color: $text-sidebar !important;
 }
 
 /* ---------------------------------------------------
@@ -290,10 +302,10 @@ a.article:hover {
 ----------------------------------------------------- */
 
 #content {
-    width: 100%;
-    padding: 20px;
-    min-height: 100vh;
-    transition: all 0.3s;
+  width: 100%;
+  padding: 20px;
+  min-height: 100vh;
+  transition: all 0.3s;
 }
 
 /* ---------------------------------------------------
@@ -301,14 +313,14 @@ a.article:hover {
 ----------------------------------------------------- */
 
 @media (max-width: 768px) {
-    #sidebar {
-        margin-left: -250px;
-    }
-    #sidebar.active {
-        margin-left: 0;
-    }
-    #sidebarCollapse span {
-        display: none;
-    }
+  #sidebar {
+    margin-left: -250px;
+  }
+  #sidebar.active {
+    margin-left: 0;
+  }
+  #sidebarCollapse span {
+    display: none;
+  }
 }
 </style>>
