@@ -1,5 +1,7 @@
 <template>
-  <div v-if="registerShow === false">
+<div>
+  <transition name="fade">
+  <div v-if="loginShow === false && registerShow === false">
     <div class="container text-center my-auto masthead">
       <h1 class="mb-1">EDYIBPITSM</h1>
       <h3 class="mb-5">
@@ -12,6 +14,16 @@
       >Find Out More</a>
     </div>
   </div>
+  </transition>
+  <div>
+    <transition name="fade">
+      <login v-if="loginShow === true" @registerForm="registerForm"></login>
+    </transition>
+    <transition name="fade">
+      <signup v-if="registerShow === true" @loginForm="loginForm"></signup>
+    </transition>
+  </div>
+</div>
 </template>
 
 <script>
@@ -23,12 +35,21 @@ export default {
   },
   data() {
     return {
+      loginShow: false,
       registerShow: false
     };
   },
   methods: {
     findMore() {
-      this.registerShow = true;
+      this.loginShow = true;
+    },
+    registerForm(){
+      this.registerShow = true
+      this.loginShow = false
+    },
+    loginForm(){
+      this.registerShow = false
+      this.loginShow = true
     }
   }
 };
@@ -60,6 +81,13 @@ body {
   font-size: 4rem;
   margin: 0;
   padding: 0;
+}
+
+.fade-enter-active{
+  transition: opacity 1.0s ease-in;
+}
+.fade-enter/* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
 
