@@ -1,5 +1,5 @@
 <template>
-  <div v-if="registerShow === false">
+  <!-- <div v-if="registerShow === false">
     <div class="container text-center my-auto masthead">
       <h1 class="mb-1">EDYIBPITSM</h1>
       <h3 class="mb-5">
@@ -11,15 +11,18 @@
         href="#about"
       >Find Out More</a>
     </div>
-  </div>
+  </div> -->
+  <mainPage></mainPage>
 </template>
 
 <script>
 import login from "./views/Login";
-import signup from "./views/SignUp"
+import signup from "./views/SignUp";
+import mainPage from "./views/MainPage"
 export default {
   components: {
-    login, signup
+    login, signup,
+    mainPage
   },
   data() {
     return {
