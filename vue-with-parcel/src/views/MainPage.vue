@@ -17,6 +17,9 @@
         <!-- Page Content  -->
         <div id="content">
             <card v-if="publishShow"></card>
+
+                
+
             <blank v-if="addFileForm"></blank>
         </div>
         <leftForm></leftForm>

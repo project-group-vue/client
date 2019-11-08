@@ -37,6 +37,7 @@
 export default {
     methods: {
         logout() {
+
                 Swal.fire({
                 title: "GoodByee...",
                 imageUrl: 'http://giphygifs.s3.amazonaws.com/media/mNEoEM3WP57KU/giphy.gif',
@@ -45,6 +46,9 @@ export default {
                 showConfirmButton: false,
                 timer: 2000,
                 icon: 'success',
+                })
+                .then(() => {
+                    console.log('hallo')
                 })
         }
     }
