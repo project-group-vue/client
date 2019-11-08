@@ -36,6 +36,8 @@
             <input type="submit" @click.prevent="submitFile" v-if="!imagePreview" />
           </form>
         </div>
+          <hr v-if="neuralTalk">
+          <h4 class="card-title" v-if="neuralTalk">"{{ neuralTalk }}"</h4>
         <hr />
         <div v-if="imagePreview">
           <button type="button" class="btn btn-outline-success" @click="getColorize">Colorize</button>
@@ -56,94 +58,126 @@
 <script>
 import axios from "axios";
 export default {
-  data() {
-    return {
-      imagePreview: "",
-      image: "",
-      baseUrl: "http://localhost:3000"
-    };
-  },
-  methods: {
-    preview(event) {
-      let input = event.target;
-      if (input.files && input.files[0]) {
-        let reader = new FileReader();
-        reader.onload = e => {
-          this.image = e.target.result;
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
+    data() {
+        return {
+            imagePreview: '',
+            image: '',
+            baseUrl: 'http://localhost:3000',
+            neuralTalk: ''
+            
+        }
     },
-    getColorize() {
-      console.log("masuk color");
-      console.log(this.imagePreview, "img pre");
-      axios({
-        url: `${this.baseUrl}/image/colorize`,
-        method: "POST",
-        headers: {
-          token: localStorage.getItem("token")
+    methods: {
+
+        preview(event) {
+            let input = event.target
+            if (input.files && input.files[0]) {
+                let reader = new FileReader()
+                reader.onload = (e) => {
+                    this.image = e.target.result
+                }
+                reader.readAsDataURL(input.files[0])
+            }
+            
         },
-        data: {
-          imageUrl: this.imagePreview
-        }
-      })
-        .then(({ data }) => {
-          console.log(data);
-          this.imagePreview = data;
-        })
-        .catch(err => {
-          console.log(err.response);
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: `${err.response.data.message}`
-          });
-        });
-    },
-    getDeepDream() {
-      axios({
-        url: `${this.baseUrl}/image/deepdream`,
-        headers: {
-          token: localStorage.getItem("token")
+
+        getColorize() {
+            Swal.showLoading()
+            axios({
+                url : `${this.baseUrl}/image/colorize`,
+                method: 'POST',
+                headers : {
+                    token: localStorage.getItem('token')
+                },
+                data: {
+                    imageUrl: this.imagePreview
+                }
+            })
+            .then(({data}) => {
+                Swal.close()
+                this.imagePreview = data
+            })
+            .catch((err) => {
+                    Swal.close()
+                    Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: `${err.response.data.message}`
+                    })
+            })
+                
         },
-        data: {
-          imageUrl: this.imagePreview
-        }
-      })
-        .then(({ data }) => {
-          this.data;
-        })
-        .catch(err => {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: `${err.response.data.message}`
-          });
-        });
-    },
-    getNeuraltalk() {
-      axios({
-        url: `${this.baseUrl}/image/neuraltalk`,
-        imageUrl: this.imagePreview
-      });
-    },
-    sendFile() {
-      axios({
-        url: `${this.baseUrl}/image/share`,
-        headers: localStorage.getItem("token"),
-        data: {
-          image: this.image
-        }
-      }).then(({ data }) => {
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Your pictures has been saved",
-          showConfirmButton: false,
-          timer: 1500
-        });
-      });
-    },
+        getDeepDream () {
+            Swal.showLoading()
+            axios ({
+                url: `${this.baseUrl}/image/deepdream`,
+                headers: {
+                    token: localStorage.getItem('token')
+                },
+                data: {
+                    imageUrl: this.imagePreview
+                },
+                method: 'POST'
+            })
+            .then (({data}) => {
+                Swal.close()
+                this.data
+            })
+            .catch ((err) => {
+                console.log(err.response.data)
+                Swal.close()
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `${err.response.data.message}`
+                })
+            })
+        },
+        getNeuraltalk () {
+            Swal.showLoading()
+            axios({
+                url: `${this.baseUrl}/image/neuraltalk`,
+                headers: {
+                    token: localStorage.getItem('token')
+                },
+                data: {
+                    imageUrl: this.imagePreview
+                },
+                method: "POST"
+            })
+            .then(({data})=> {
+                  Swal.close()
+                this.neuralTalk = data
+            })
+            .catch ((err) => {
+                Swal.close()
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `${err.response.data.message}`
+                })
+            })
+        },
+        sendFile() {
+            axios({
+                url: `${this.baseUrl}/image/share`,
+                headers: localStorage.getItem('token'),
+                data: {
+                    image: this.image
+                }
+            })
+            .then (({data}) => {
+                Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Your pictures has been saved',
+                showConfirmButton: false,
+                timer: 1500
+                })
+            })
+
+        },
+
     handleFileUpload() {
       this.image = this.$refs.file.files[0];
     },
