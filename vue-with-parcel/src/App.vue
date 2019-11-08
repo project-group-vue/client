@@ -1,6 +1,20 @@
 <template>
 <div>
-  <mainPage></mainPage>
+  <transition name="fade">
+  <div v-if="loginShow === false && registerShow === false">
+    <div class="container text-center my-auto masthead">
+      <h1 class="mb-1">EDYIBPITSM</h1>
+      <h3 class="mb-5">
+        <em>Make Your Post Better</em>
+      </h3>
+      <a
+        class="btn btn-primary btn-xl js-scroll-trigger"
+        v-on:click="findMore"
+        href="#about"
+      >Find Out More</a>
+    </div>
+  </div>
+  </transition>
   <div>
     <transition name="fade">
       <login v-if="loginShow === true" @registerForm="registerForm"></login>

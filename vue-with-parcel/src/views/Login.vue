@@ -62,8 +62,8 @@ export default {
                 text: 'User logged in!',
               })
                 console.log(data)
-                this.email = ""
-                this.password = ""
+              this.email = ""
+              this.password = ""
             })
             .catch(err => {
               Swal.close()
