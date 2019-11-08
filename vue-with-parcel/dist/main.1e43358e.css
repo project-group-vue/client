@@ -1,3 +1,7 @@
+.fdb-block{
+    height: 100vh;
+    background-image: url('/bg-masthead.abe09b51.jpg')
+}
 .card-body img {
     cursor: pointer;  
 }
@@ -183,4 +187,30 @@ a.article[data-v-60fa01]:hover {
 #sidebarCollapse span[data-v-60fa01] {
     display: none;
 }
+}
+body {
+  background: url("/bg-masthead.abe09b51.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  -o-background-size: cover;
+}
+
+.masthead {
+  min-height: 30rem;
+  position: relative;
+  display: table;
+  width: 100%;
+  height: auto;
+  padding-top: 8rem;
+  padding-bottom: 8rem;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.masthead h1 {
+  font-size: 4rem;
+  margin: 0;
+  padding: 0;
 }

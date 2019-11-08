@@ -2,7 +2,7 @@
     <div>
     <div class="card mb-3 shadow-sm p-3 mb-5 bg-white rounded">
 
-                <!-- <img :src="image" class="card-img-top" alt="" height="300" width="200" v-if="image"> -->
+                <img src="https://media.giphy.com/media/ZvjRrOBjxFdWo/giphy.gif" class="card-img-top" alt="" height="300" width="200" v-if="!imagePreview">
                 <img :src="imagePreview" class="card-img-top" alt="" height="300" width="200" v-if="imagePreview">
 
                 <div class="card-body">
@@ -15,14 +15,13 @@
                                 <label for="exampleFormControlFile1">Example file input</label>
                                 <input type="file" class="form-control-file" id="file" ref='file' v-on:change="handleFileUpload">
                             </div>
-                            <input type="submit" @click.prevent="submitFile">
-                            </form>
+                            <input type="submit" @click.prevent="submitFile" v-if="!imagePreview">
+                            </form> 
                     </div>
+                    <hr v-if="neuralTalk">
+                    <h4 class="card-title" v-if="neuralTalk">"{{ neuralTalk }}"</h4>
                     <hr>
-                    <div v-if="!image">
-                        <button type="button" class="btn btn-outline-success" @click="getColorize">Colorize</button>
-                    </div>
-                    <div v-if="image">
+                    <div v-if="imagePreview">
                      <button type="button" class="btn btn-outline-success" @click="getColorize">Colorize</button>
                     <button type="button" class="btn btn-outline-success" @click="getDeepDream">Deep Dream</button>
                     <button type="button" class="btn btn-outline-success" @click="getNeuraltalk">Neural Talk</button>
@@ -40,7 +39,9 @@ export default {
         return {
             imagePreview: '',
             image: '',
-            baseUrl: 'http://localhost:3000'
+            baseUrl: 'http://localhost:3000',
+            neuralTalk: ''
+            
         }
     },
     methods: {
@@ -58,8 +59,7 @@ export default {
         },
 
         getColorize() {
-            console.log('masuk color')
-            console.log(this.imagePreview, 'img pre')
+            Swal.showLoading()
             axios({
                 url : `${this.baseUrl}/image/colorize`,
                 method: 'POST',
@@ -71,11 +71,11 @@ export default {
                 }
             })
             .then(({data}) => {
-                console.log(data)
+                Swal.close()
                 this.imagePreview = data
             })
             .catch((err) => {
-                console.log(err.response)
+                    Swal.close()
                     Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
@@ -85,15 +85,24 @@ export default {
                 
         },
         getDeepDream () {
+            Swal.showLoading()
             axios ({
                 url: `${this.baseUrl}/image/deepdream`,
-                headers: localStorage.getItem('token'),
-                imageUrl: this.imagePreview
+                headers: {
+                    token: localStorage.getItem('token')
+                },
+                data: {
+                    imageUrl: this.imagePreview
+                },
+                method: 'POST'
             })
             .then (({data}) => {
+                Swal.close()
                 this.data
             })
             .catch ((err) => {
+                console.log(err.response.data)
+                Swal.close()
                 Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -102,9 +111,28 @@ export default {
             })
         },
         getNeuraltalk () {
+            Swal.showLoading()
             axios({
                 url: `${this.baseUrl}/image/neuraltalk`,
-                imageUrl: this.imagePreview
+                headers: {
+                    token: localStorage.getItem('token')
+                },
+                data: {
+                    imageUrl: this.imagePreview
+                },
+                method: "POST"
+            })
+            .then(({data})=> {
+                  Swal.close()
+                this.neuralTalk = data
+            })
+            .catch ((err) => {
+                Swal.close()
+                Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: `${err.response.data.message}`
+                })
             })
         },
         sendFile() {
@@ -124,6 +152,7 @@ export default {
                 timer: 1500
                 })
             })
+
         },
         handleFileUpload(){
       this.image = this.$refs.file.files[0]
@@ -143,7 +172,7 @@ export default {
         url :  'http://localhost:3000/image/uploadgcs',
         data: formData,
         headers: {
-            token : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkYzRmNzJkODUxYmNkMzMzNDhhYzc4YiIsImlhdCI6MTU3MzE4OTQzNX0.GFPTGY6VCTqb_sRdpXJ4AM93rixarBiIxDEgQfKbXgw"
+            token : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkYzRmNzJkODUxYmNkMzMzNDhhYzc4YiIsImlhdCI6MTU3MzE5NTU0NX0.eFLR9zOdzO7yu7MJU4x2t4ZIgEIRdliInmplKsfNPQM"
         },
         config : {
           headers : {
