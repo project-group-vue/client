@@ -32,6 +32,7 @@ import card from "../components/card";
 import navbar from "../components/navbar";
 import leftForm from "../components/leftForm";
 import blank from "../components/blank";
+import axios from "axios";
 
 export default {
   data() {
@@ -39,7 +40,7 @@ export default {
       showLeftBar: false,
       addFileForm: false,
       publishShow: true,
-      pictures: ["1", "2", "3"],
+      pictures: [],
       isWaiting: false
     };
   },
@@ -62,7 +63,9 @@ export default {
       this.publishShow = false;
     },
     showPublish() {
-      (this.addFileForm = false), (this.publishShow = true);
+      this.getUserPicture();
+      this.addFileForm = false;
+      this.publishShow = true;
     },
     getPics() {
       isWaiting = true;
@@ -98,6 +101,10 @@ export default {
     logoutEvent() {
       this.$emit("logoutEvent");
     }
+  },
+
+  creeated() {
+    this.getUserPicture();
   }
 };
 </script>
