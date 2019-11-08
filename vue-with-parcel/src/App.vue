@@ -1,23 +1,20 @@
 <template>
-  <div>
 
 
 
-
-
-      <button>Register</button>
-  </div>
 </template>
 
 <script>
-import login from './views/Login'
+
+import mainPage from './views/MainPage'
+
 export default {
     components: {
-        login
+        mainPage
     },
     data() {
         return {
-            registerShow: false
+            
         }
     }
 }
